@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card';
@@ -9,41 +9,41 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    
     const navigate = useNavigate();
-
+    const { register, isLoading, error, isAuthenticated, clearError } = useAuth();
+    
+    // Redirect if already authenticated
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/dashboard');
+        }
+        
+        // Clear errors when component unmounts
+        return () => {
+            clearError();
+        };
+    }, [isAuthenticated, navigate, clearError]);
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsLoading(true);
-        setError('');
+        setPasswordError('');
         
         // Check if passwords match
         if (password !== confirmPassword) {
-            setError('Passwords do not match');
-            setIsLoading(false);
+            setPasswordError('Passwords do not match');
             return;
         }
         
-        try {
-            const response = await axios.post('http://localhost:5000/api/auth/register', { 
-                email, 
-                password 
-            });
-            
-            // If registration is successful, store token and user data
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
-            
-            // Redirect to dashboard after successful registration
+        const success = await register(email, password);
+        if (success) {
             navigate('/dashboard');
-        } catch (error) {
-            setError(error.response?.data?.message || 'Registration failed');
-            console.error('Registration failed:', error);
-        } finally {
-            setIsLoading(false);
         }
     };
+    
+    // Display either the password error or the API error
+    const displayError = passwordError || error;
     
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -57,9 +57,9 @@ const Register = () => {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    {error && (
+                    {displayError && (
                         <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
-                            {error}
+                            {displayError}
                         </div>
                     )}
                     <form onSubmit={handleSubmit} className="space-y-4">
