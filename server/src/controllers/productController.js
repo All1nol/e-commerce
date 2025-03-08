@@ -2,36 +2,16 @@ import ProductModel from '../models/ProductModel.js';
 
 export const createProduct = async (req, res) => {
     try {
-        console.log('Creating product with data:', req.body);
-        console.log('User making request:', req.user);
+        // Get data from request
+        const { name, price } = req.body;
         
-        const { name, description, price, category, stockQuantity, imageUrl } = req.body;
+        // Use model to interact with database
+        const product = await ProductModel.create({ name, price });
         
-        const product = await ProductModel.create({
-            name,
-            description,
-            price,
-            category,
-            stockQuantity,
-            imageUrl,
-            seller: req.user._id
-        });
-
-        console.log('Product created:', product);
-
-        if (product) {
-            res.status(201).json({
-                product,
-                message: 'Product created successfully'
-            });
-        } else {
-            res.status(400).json({
-                message: 'Invalid product data'
-            });
-        }
+        // Send response
+        res.status(201).json(product);
     } catch (error) {
-        console.error('Error creating product:', error);
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -106,6 +86,19 @@ export const deleteProduct = async (req, res) => {
         await product.deleteOne();
         
         res.status(200).json({ message: 'Product removed' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const getProductsByUser = async (req, res) => {
+    try {
+        const products = await ProductModel.find({ seller: req.params.userId });
+        if (products.length > 0) {
+            res.status(200).json(products);
+        } else {
+            res.status(404).json({ message: 'No products found for this user' });
+        }
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
