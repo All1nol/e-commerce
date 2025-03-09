@@ -14,13 +14,13 @@ const login = async (userData) => {
 
 // Get current user profile
 const getUserProfile = async () => {
-  const response = await api.get('/auth/profile');
+  const response = await api.get('/users/profile');
   return response.data;
 };
 
 // Update user profile
 const updateUserProfile = async (userData) => {
-  const response = await api.put('/auth/profile', userData);
+  const response = await api.put('/users/profile', userData);
   return response.data;
 };
 

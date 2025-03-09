@@ -31,7 +31,9 @@ export const AuthProvider = ({ children }) => {
           // Try to get user profile to validate token
           const userProfile = await getUserProfile();
           setUser(userProfile);
+          setToken(storedToken); // Make sure token is set in state
           setIsAuthenticated(true);
+          console.log('Token validated, user profile:', userProfile);
         } catch (error) {
           console.error('Error validating token:', error);
           // If token is invalid, clear everything
@@ -60,18 +62,30 @@ export const AuthProvider = ({ children }) => {
       
       // Store in localStorage
       localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('user', JSON.stringify({
+        _id: data._id,
+        email: data.email
+      }));
       
-      // Update state
+      // Update state in a specific order to ensure consistency
+      setUser({
+        _id: data._id,
+        email: data.email
+      });
       setToken(data.token);
-      setUser(data.user);
+      
+      // Set authenticated last to ensure other state is ready
       setIsAuthenticated(true);
       
-      return true;
+      console.log('Login successful, user data:', data);
+      
+      // Return after state is updated
+      return { success: true, user: { _id: data._id, email: data.email } };
     } catch (error) {
+      console.error('Login error:', error);
       setError(error.response?.data?.message || 'Authentication failed');
       setIsAuthenticated(false);
-      return false;
+      return { success: false, error: error.response?.data?.message || 'Authentication failed' };
     } finally {
       setIsLoading(false);
     }
@@ -87,11 +101,17 @@ export const AuthProvider = ({ children }) => {
       
       // Store in localStorage
       localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('user', JSON.stringify({
+        _id: data._id,
+        email: data.email
+      }));
       
       // Update state
       setToken(data.token);
-      setUser(data.user);
+      setUser({
+        _id: data._id,
+        email: data.email
+      });
       setIsAuthenticated(true);
       
       return true;

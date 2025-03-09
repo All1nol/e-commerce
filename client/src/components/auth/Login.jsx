@@ -5,22 +5,26 @@ import { useAuth } from '../../context/AuthContext';
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { login, error, isAuthenticated } = useAuth();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { login, error } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const success = await login(email, password);
-        if (success) {
-            navigate('/dashboard');
+        setIsSubmitting(true);
+        
+        try {
+            const result = await login(email, password);
+            if (result.success) {
+                // Navigate after successful login
+                navigate('/dashboard', { replace: true });
+            }
+        } catch (err) {
+            console.error('Login error:', err);
+        } finally {
+            setIsSubmitting(false);
         }
     };
-
-    React.useEffect(() => {
-        if (isAuthenticated) {
-            navigate('/dashboard');
-        }
-    }, [isAuthenticated, navigate]);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -74,9 +78,10 @@ const Login = () => {
                     <div>
                         <button
                             type="submit"
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            disabled={isSubmitting}
+                            className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${isSubmitting ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
                         >
-                            Sign in
+                            {isSubmitting ? 'Signing in...' : 'Sign in'}
                         </button>
                     </div>
                 </form>
