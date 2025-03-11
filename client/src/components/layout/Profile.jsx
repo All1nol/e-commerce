@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useUser } from '../../context/UserContext';
+import { useAuth } from '../../context/AuthContext';
 import { getUserProfile } from '../../services/userService';
 import UserProducts from '../user/UserProducts';
 import { 
@@ -15,7 +16,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/ta
 import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
-  const { user, loading: userContextLoading } = useUser();
+  const { user: userProfile, loading: userContextLoading } = useUser();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,7 +26,7 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchProfileData = async () => {
-      if (user && user._id) {
+      if (isAuthenticated) {
         try {
           setLoading(true);
           const data = await getUserProfile();
@@ -39,12 +41,13 @@ const Profile = () => {
       }
     };
 
-    if (!userContextLoading) {
+    if (!authLoading && !userContextLoading) {
       fetchProfileData();
     }
-  }, [user, userContextLoading]);
+  }, [isAuthenticated, authLoading, userContextLoading]);
 
-  if (userContextLoading || loading) {
+  // Show loading state while either context is initializing
+  if (authLoading || userContextLoading || loading) {
     return (
       <div className="flex justify-center items-center p-12 bg-gray-100 rounded-lg">
         <div className="text-center">
@@ -66,7 +69,7 @@ const Profile = () => {
     );
   }
 
-  if (!user) {
+  if (!isAuthenticated) {
     return (
       <div className="text-center p-8 bg-white rounded-lg shadow-sm border border-gray-200">
         <p className="text-gray-600 mb-4">Please log in to view your profile</p>
@@ -80,8 +83,8 @@ const Profile = () => {
     );
   }
 
-  // Use user data if profileData is not available
-  const displayData = profileData || user;
+  // Use profile data if available, otherwise fall back to user context data
+  const displayData = profileData || userProfile;
 
   // Get initials for avatar fallback
   const getInitials = (name) => {
