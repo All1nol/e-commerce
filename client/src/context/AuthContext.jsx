@@ -33,7 +33,6 @@ export const AuthProvider = ({ children }) => {
           setUser(userProfile);
           setToken(storedToken); // Make sure token is set in state
           setIsAuthenticated(true);
-          console.log('Token validated, user profile:', userProfile);
         } catch (error) {
           console.error('Error validating token:', error);
           // If token is invalid, clear everything
@@ -76,8 +75,6 @@ export const AuthProvider = ({ children }) => {
       
       // Set authenticated last to ensure other state is ready
       setIsAuthenticated(true);
-      
-      console.log('Login successful, user data:', data);
       
       // Return after state is updated
       return { success: true, user: { _id: data._id, email: data.email } };

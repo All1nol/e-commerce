@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card';
 
 const Register = () => {
     const [email, setEmail] = useState('');
@@ -46,80 +43,86 @@ const Register = () => {
     const displayError = passwordError || error;
     
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <Card className="w-full max-w-md">
-                <CardHeader className="space-y-1">
-                    <CardTitle className="text-2xl font-bold text-center">
-                        Create an account
-                    </CardTitle>
-                    <CardDescription className="text-center">
-                        Enter your details to create a new account
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    {displayError && (
-                        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
-                            {displayError}
-                        </div>
-                    )}
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="space-y-2">
-                            <label htmlFor="email" className="text-sm font-medium">
-                                Email
-                            </label>
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="name@example.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <label htmlFor="password" className="text-sm font-medium">
-                                Password
-                            </label>
-                            <Input
-                                id="password"
-                                type="password"
-                                placeholder="••••••••"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <label htmlFor="confirmPassword" className="text-sm font-medium">
-                                Confirm Password
-                            </label>
-                            <Input
-                                id="confirmPassword"
-                                type="password"
-                                placeholder="••••••••"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <Button 
-                            type="submit" 
-                            className="w-full" 
-                            disabled={isLoading}
-                        >
-                            {isLoading ? 'Processing...' : 'Register'}
-                        </Button>
-                    </form>
-                </CardContent>
-                <CardFooter className="flex flex-col">
-                    <div className="text-sm text-center text-gray-500 mt-2">
-                        Already have an account?{' '}
-                        <Link to="/login" className="text-primary font-semibold hover:underline">
-                            Login
-                        </Link>
-                    </div>
-                </CardFooter>
-            </Card>
+        <div style={{ maxWidth: '400px', margin: '100px auto', padding: '20px', border: '1px solid #ccc' }}>
+            <h2 style={{ textAlign: 'center', marginBottom: '10px' }}>Create an account</h2>
+            <p style={{ textAlign: 'center', marginBottom: '20px', color: '#666' }}>
+                Enter your details to create a new account
+            </p>
+            
+            {displayError && (
+                <div style={{ backgroundColor: '#ffebee', color: '#c62828', padding: '10px', marginBottom: '20px', border: '1px solid #ef9a9a' }}>
+                    {displayError}
+                </div>
+            )}
+            
+            <form onSubmit={handleSubmit}>
+                <div style={{ marginBottom: '15px' }}>
+                    <label htmlFor="email" style={{ display: 'block', marginBottom: '5px' }}>
+                        Email
+                    </label>
+                    <input
+                        id="email"
+                        type="email"
+                        placeholder="name@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        style={{ width: '100%', padding: '8px', border: '1px solid #ccc' }}
+                    />
+                </div>
+                
+                <div style={{ marginBottom: '15px' }}>
+                    <label htmlFor="password" style={{ display: 'block', marginBottom: '5px' }}>
+                        Password
+                    </label>
+                    <input
+                        id="password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        style={{ width: '100%', padding: '8px', border: '1px solid #ccc' }}
+                    />
+                </div>
+                
+                <div style={{ marginBottom: '15px' }}>
+                    <label htmlFor="confirmPassword" style={{ display: 'block', marginBottom: '5px' }}>
+                        Confirm Password
+                    </label>
+                    <input
+                        id="confirmPassword"
+                        type="password"
+                        placeholder="••••••••"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                        style={{ width: '100%', padding: '8px', border: '1px solid #ccc' }}
+                    />
+                </div>
+                
+                <button 
+                    type="submit" 
+                    disabled={isLoading}
+                    style={{ 
+                        width: '100%', 
+                        padding: '10px', 
+                        backgroundColor: isLoading ? '#ccc' : '#333', 
+                        color: 'white', 
+                        border: 'none', 
+                        cursor: isLoading ? 'not-allowed' : 'pointer' 
+                    }}
+                >
+                    {isLoading ? 'Processing...' : 'Register'}
+                </button>
+            </form>
+            
+            <div style={{ textAlign: 'center', marginTop: '20px', color: '#666' }}>
+                Already have an account?{' '}
+                <Link to="/login" style={{ color: '#333', textDecoration: 'underline' }}>
+                    Login
+                </Link>
+            </div>
         </div>
     );
 };

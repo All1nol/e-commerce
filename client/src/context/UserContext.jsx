@@ -11,13 +11,10 @@ export const UserProvider = ({children}) => {
 
     const fetchUser = async () => {
         try{
-            console.log('Fetching user profile in UserContext');
             const userProfile = await getUserProfile();
-            console.log('User profile fetched in UserContext:', userProfile);
             setUser(userProfile);
             setLoading(false);
         } catch (error) {
-            console.error('Error fetching user in UserContext:', error);
             setError(error.message);
             setLoading(false);
         }
@@ -27,10 +24,8 @@ export const UserProvider = ({children}) => {
         // Check if token exists
         const token = localStorage.getItem('token');
         if (token) {
-            console.log('Token found in UserContext, fetching user data');
             fetchUser();
         } else {
-            console.log('No token found in UserContext');
             setLoading(false);
         }
     }, []);

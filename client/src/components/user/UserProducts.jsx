@@ -4,6 +4,7 @@ import { getUserProducts } from '../../services/userService';
 import { Button } from "../../components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import ProductCard from '../products/ProductCard';
+import { Card, CardContent } from '../ui/card';
 
 const UserProducts = () => {
     const { user } = useUser();
@@ -17,7 +18,7 @@ const UserProducts = () => {
             if (user && user._id) {
                 setLoading(true);
                 try {
-                    const data = await getUserProducts(user._id);
+                    const data = await getUserProducts();
                     setProducts(data);
                 } catch (err) {
                     setError(err.message);
@@ -30,25 +31,44 @@ const UserProducts = () => {
         fetchUserProducts();
     }, [user]);
 
-    if (loading) return <div className="flex justify-center items-center p-8">Loading...</div>;
-    if (error) return <div className="text-red-500 p-4">Error: {error}</div>;
+    if (loading) return (
+        <div className="flex justify-center items-center p-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-700"></div>
+        </div>
+    );
+    
+    if (error) return (
+        <Card className="bg-red-50 border border-red-200 mb-4">
+            <CardContent className="p-4 text-red-600">
+                Error: {error}
+            </CardContent>
+        </Card>
+    );
     
     return (
-        <div className="container mx-auto p-4">
+        <div className="w-full p-4 bg-gray-100 rounded-lg">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">My Products</h2>
-                <Button onClick={() => navigate('/products/create')}>
+                <h2 className="text-2xl font-bold text-gray-900">My Products</h2>
+                <Button 
+                    onClick={() => navigate('/products/new')}
+                    className="bg-gray-800 hover:bg-gray-700 text-white"
+                >
                     Add New Product
                 </Button>
             </div>
             
             {products.length === 0 ? (
-                <div className="text-center p-8 bg-gray-50 rounded-lg">
-                    <p className="text-gray-500 mb-4">You haven't published any products yet.</p>
-                    <Button onClick={() => navigate('/products/create')}>
-                        Create Your First Product
-                    </Button>
-                </div>
+                <Card className="bg-white border border-gray-200">
+                    <CardContent className="text-center p-8">
+                        <p className="text-gray-600 mb-4">You haven't published any products yet.</p>
+                        <Button 
+                            onClick={() => navigate('/products/new')}
+                            className="bg-gray-800 hover:bg-gray-700 text-white"
+                        >
+                            Create Your First Product
+                        </Button>
+                    </CardContent>
+                </Card>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {products.map(product => (

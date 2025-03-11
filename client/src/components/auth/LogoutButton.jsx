@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Button } from '../ui/button';
 
 const LogoutButton = () => {
   const { logout } = useAuth();
@@ -13,13 +12,12 @@ const LogoutButton = () => {
   };
   
   return (
-    <Button 
-      variant="outline" 
+    <button 
       onClick={handleLogout}
-      className="ml-auto"
+      className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors"
     >
       Logout
-    </Button>
+    </button>
   );
 };
 

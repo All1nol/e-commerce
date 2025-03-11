@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 const Login = () => {
@@ -27,65 +27,73 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8">
-                <div>
-                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                        Sign in to your account
-                    </h2>
+        <div style={{ maxWidth: '400px', margin: '100px auto', padding: '20px', border: '1px solid #ccc' }}>
+            <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Sign in to your account</h2>
+            <p style={{ textAlign: 'center', marginBottom: '20px' }}>
+                Or{' '}
+                <Link to="/register" style={{ color: '#333', textDecoration: 'underline' }}>
+                    create a new account
+                </Link>
+            </p>
+            
+            <form onSubmit={handleSubmit}>
+                {error && (
+                    <div style={{ backgroundColor: '#ffebee', color: '#c62828', padding: '10px', marginBottom: '20px', border: '1px solid #ef9a9a' }}>
+                        {error}
+                    </div>
+                )}
+                
+                <div style={{ marginBottom: '15px' }}>
+                    <label htmlFor="email-address" style={{ display: 'block', marginBottom: '5px' }}>
+                        Email address
+                    </label>
+                    <input
+                        id="email-address"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        required
+                        style={{ width: '100%', padding: '8px', border: '1px solid #ccc' }}
+                        placeholder="Email address"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
                 </div>
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                    {error && (
-                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                            <span className="block sm:inline">{error}</span>
-                        </div>
-                    )}
-                    <div className="rounded-md shadow-sm -space-y-px">
-                        <div>
-                            <label htmlFor="email-address" className="sr-only">
-                                Email address
-                            </label>
-                            <input
-                                id="email-address"
-                                name="email"
-                                type="email"
-                                autoComplete="email"
-                                required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                                placeholder="Email address"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="password" className="sr-only">
-                                Password
-                            </label>
-                            <input
-                                id="password"
-                                name="password"
-                                type="password"
-                                autoComplete="current-password"
-                                required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                                placeholder="Password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </div>
-                    </div>
+                
+                <div style={{ marginBottom: '15px' }}>
+                    <label htmlFor="password" style={{ display: 'block', marginBottom: '5px' }}>
+                        Password
+                    </label>
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        autoComplete="current-password"
+                        required
+                        style={{ width: '100%', padding: '8px', border: '1px solid #ccc' }}
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </div>
 
-                    <div>
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${isSubmitting ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
-                        >
-                            {isSubmitting ? 'Signing in...' : 'Sign in'}
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div>
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        style={{ 
+                            width: '100%', 
+                            padding: '10px', 
+                            backgroundColor: isSubmitting ? '#ccc' : '#333', 
+                            color: 'white', 
+                            border: 'none', 
+                            cursor: isSubmitting ? 'not-allowed' : 'pointer' 
+                        }}
+                    >
+                        {isSubmitting ? 'Signing in...' : 'Sign in'}
+                    </button>
+                </div>
+            </form>
         </div>
     );
 };

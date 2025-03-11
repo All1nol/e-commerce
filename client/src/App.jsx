@@ -5,17 +5,34 @@ import Register from './components/auth/Register'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { UserProvider } from './context/UserContext'
 import NewProduct from './components/products/NewProduct'
-import { ToastProvider } from './components/ui/use-toast'
 import { ProductProvider } from './context/ProductContext'
 import Dashboard from './components/layout/Dashboard'
 import ProductDetail from './components/layout/ProductDetail'
 import Profile from './components/layout/Profile'
 import Navbar from './components/layout/Navbar'
-import './App.css'
 
 // Loading component
 const LoadingScreen = () => (
-  <div className="flex items-center justify-center min-h-screen">Loading...</div>
+  <div style={{ 
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    minHeight: '100vh', 
+    backgroundColor: '#f9fafb' 
+  }}>
+    <div style={{ textAlign: 'center' }}>
+      <div style={{ 
+        width: '48px', 
+        height: '48px', 
+        border: '3px solid #e5e7eb', 
+        borderTopColor: '#3b82f6', 
+        borderRadius: '50%', 
+        animation: 'spin 1s linear infinite', 
+        margin: '0 auto 16px' 
+      }}></div>
+      <p style={{ color: '#4b5563', fontWeight: '500' }}>Loading application...</p>
+    </div>
+  </div>
 );
 
 // Protected route wrapper
@@ -31,12 +48,37 @@ const ProtectedRoute = ({ children }) => {
   }
   
   return (
-    <>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
-      <div className="pt-4 container mx-auto px-4">
-        {children}
-      </div>
-    </>
+      <main style={{ 
+        flexGrow: 1, 
+        paddingTop: '80px', 
+        paddingBottom: '32px', 
+        paddingLeft: '16px', 
+        paddingRight: '16px', 
+        margin: '0 auto', 
+        width: '100%', 
+        maxWidth: '1280px', 
+        display: 'flex', 
+        justifyContent: 'center' 
+      }}>
+        <div style={{ width: '100%' }}>
+          {children}
+        </div>
+      </main>
+      <footer style={{ 
+        backgroundColor: 'white', 
+        borderTop: '1px solid #e5e7eb', 
+        padding: '16px', 
+        textAlign: 'center', 
+        color: '#6b7280', 
+        fontSize: '0.875rem' 
+      }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 16px' }}>
+          © {new Date().getFullYear()} Marketplace. All rights reserved.
+        </div>
+      </footer>
+    </div>
   );
 };
 
@@ -88,15 +130,13 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <ToastProvider>
-          <ProductProvider>
-            <UserProvider>
-              <div className="app-container">
-                <AppContent />
-              </div>
-            </UserProvider>
-          </ProductProvider>
-        </ToastProvider>
+        <ProductProvider>
+          <UserProvider>
+            <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+              <AppContent />
+            </div>
+          </UserProvider>
+        </ProductProvider>
       </AuthProvider>
     </Router>
   );

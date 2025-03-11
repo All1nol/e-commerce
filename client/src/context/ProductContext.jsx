@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { createProduct, getProducts, getProductById, updateProduct, deleteProduct } from '../services/productService';
 import { useAuth } from './AuthContext';
-import { useToast } from '../components/ui/use-toast';
 
 const ProductContext = createContext({});
 
@@ -10,7 +9,19 @@ export const ProductProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { token } = useAuth();
-  const { toast } = useToast();
+
+  // Simple notification function
+  const showNotification = (type, message) => {
+    if (type === 'success') {
+      console.log(`Success: ${message}`);
+      // In a real app, you might want to use a more sophisticated notification system
+      // For now, we'll use alert for simplicity
+      alert(`Success: ${message}`);
+    } else if (type === 'error') {
+      console.error(`Error: ${message}`);
+      alert(`Error: ${message}`);
+    }
+  };
 
   // Create a new product
   const addProduct = async (productData) => {
@@ -19,18 +30,11 @@ export const ProductProvider = ({ children }) => {
     try {
       const response = await createProduct(productData);
       setProducts(prevProducts => [...prevProducts, response.product]);
-      toast({
-        title: "Success",
-        description: "Product created successfully",
-      });
+      showNotification('success', 'Product created successfully');
       return response.product;
     } catch (err) {
       setError(err.message);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: err.message || "Failed to create product",
-      });
+      showNotification('error', err.message || 'Failed to create product');
       throw err;
     } finally {
       setLoading(false);
@@ -46,15 +50,11 @@ export const ProductProvider = ({ children }) => {
       setProducts(data);
     } catch (err) {
       setError(err.message);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to fetch products",
-      });
+      showNotification('error', 'Failed to fetch products');
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, []);
 
   // Get a single product
   const fetchProductById = async (id) => {
@@ -65,11 +65,7 @@ export const ProductProvider = ({ children }) => {
       return product;
     } catch (err) {
       setError(err.message);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to fetch product",
-      });
+      showNotification('error', 'Failed to fetch product');
       throw err;
     } finally {
       setLoading(false);
@@ -87,18 +83,11 @@ export const ProductProvider = ({ children }) => {
           product._id === id ? updatedProduct : product
         )
       );
-      toast({
-        title: "Success",
-        description: "Product updated successfully",
-      });
+      showNotification('success', 'Product updated successfully');
       return updatedProduct;
     } catch (err) {
       setError(err.message);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to update product",
-      });
+      showNotification('error', 'Failed to update product');
       throw err;
     } finally {
       setLoading(false);
@@ -114,17 +103,10 @@ export const ProductProvider = ({ children }) => {
       setProducts(prevProducts =>
         prevProducts.filter(product => product._id !== id)
       );
-      toast({
-        title: "Success",
-        description: "Product deleted successfully",
-      });
+      showNotification('success', 'Product deleted successfully');
     } catch (err) {
       setError(err.message);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to delete product",
-      });
+      showNotification('error', 'Failed to delete product');
       throw err;
     } finally {
       setLoading(false);

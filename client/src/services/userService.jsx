@@ -3,12 +3,7 @@ import api from './api';
 // Get user profile
 const getUserProfile = async () => {
     try{
-        console.log('Fetching user profile...');
-        const token = localStorage.getItem('token');
-        console.log('Token exists:', !!token);
-        
         const response = await api.get('/users/profile');
-        console.log('Fetched user profile:', response.data);
         return response.data;
     } catch (error) {
         console.error('Error in getUserProfile:', error.response?.data || error.message);
@@ -16,12 +11,10 @@ const getUserProfile = async () => {
     }
 }
 
-// Get products by user ID
-const getUserProducts = async (userId) => {
+// Get products for the authenticated user
+const getUserProducts = async () => {
     try {
-        console.log('Fetching products for user ID:', userId);
-        const response = await api.get(`/users/products`);
-        console.log('Fetched user products:', response.data);
+        const response = await api.get('/users/products');
         return response.data;
     } catch (error) {
         console.error('Error in getUserProducts:', error.response?.data || error.message);
